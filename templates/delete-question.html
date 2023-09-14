@@ -1,0 +1,62 @@
+{% extends 'index.html' %} 
+
+{% block style %}
+    <style>
+    h3 {
+        margin-bottom: 15px;
+    }
+    p {
+        padding-left: 10px;
+    }
+
+    .btn.delete {
+        color: red;
+        border-color: red;
+    }
+
+    .btn.delete:hover {
+        color: white;
+
+        background-color: red;
+
+        border-color: red;
+    }
+
+    .btn.cancel {
+        color: white;
+        border-color: dodgerblue;
+        background-color: dodgerblue;
+    }
+
+    .btn.cancel:hover {
+        background-color: #0464c4;
+        border-color: #0464c4;
+
+    }
+    </style>
+{% endblock style %} 
+
+{% block content %}
+    <h3>Haqiqatdan ham bu savolni o'chirmoqchimisi?</h3>
+
+    <p>
+        <b>Savol</b> {{ question.title }}
+    </p>
+
+    <p>
+        <b>Javob</b> {{ question.answer }}
+    </p>
+    <br>
+    
+    
+
+    <div class="group">
+        <a href="{% url 'home' %}">
+            <button class="btn cancel">Bekor qilish</button>
+        </a>
+        <a href="{% url 'delete' question.pk %}">
+            <button class="btn delete">O'chirish</button>
+        </a>
+    </div>
+
+{% endblock content %}

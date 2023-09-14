@@ -1,0 +1,124 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    outline: none;
+    text-decoration: none !important;
+    color: black;
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+    background-color: #dee2e6;
+}
+
+nav {
+    height: 7vh;
+    background-color: dodgerblue;
+    display: flex;
+    align-items: center;
+}
+
+nav .container {
+    width: 70%;
+    margin: 0 auto;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.title {
+    font-size: 20px;
+    color: white;
+    cursor: pointer;
+}
+
+.btn {
+    padding: 7px 15px;
+    color: white;
+    border: 2px solid white;
+    background-color: transparent;
+    border-radius: 3px;
+    cursor: pointer;
+    font-weight: 600;
+
+    transition: .2s ease-in-out;
+}
+
+.btn.add-question {
+    background-color: white;
+    color: dodgerblue;
+}
+
+.btn.add-question:hover {
+    background-color: #e0e0e0;
+    border-color: #e0e0e0;
+}
+
+.btn.logout:hover {
+    background-color: white;
+    color: dodgerblue;
+}
+
+
+/* ------------------------------------------------------------------------------ */
+
+
+
+.body {
+    width: 100vw;
+    max-height: 93vh;
+    padding: 10px;
+    display: flex;
+    /* align-items: center; */
+    justify-content: center;
+}
+
+.body .container {
+    box-shadow: 0px 0px 15px -13px rgba(34, 60, 80, 0.6);
+    border-radius: 10px;
+    padding: 10px;
+    width: 70%;
+    max-height: 100%;
+    background-color: white;
+    overflow: scroll;
+}
+
+.body .container .row {
+    border-radius: 3px;
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.row:hover {
+    background-color: #e0e0e0;
+}
+
+
+.row .left {
+    display: flex;
+}
+
+.row .left .question-id {
+    min-width: 40px;
+}
+
+
+/* --- */
+
+
+
+.row .right {
+    display: flex;
+    gap: 15px;
+    font-size: 23px;
+}
+
+.icon {
+    cursor: pointer;
+}

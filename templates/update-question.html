@@ -1,0 +1,82 @@
+{% extends 'index.html' %} 
+
+{% block style %}
+    <style>
+        h3 {
+            margin-bottom: 15px;
+        }
+        p {
+            padding-left: 10px;
+        }
+        
+        .btn.update {
+            font-size: 14px;
+            color: #f5b905;
+            border-color: #f5b905;
+        }
+
+        .btn.update:hover {
+            color: white;
+            background-color: #f5b905;
+            border-color: #f5b905;
+        }
+
+        .btn.cancel {
+            font-size: 14px;
+            color: white;
+            border-color: dodgerblue;
+            background-color: dodgerblue;
+        }
+
+        .btn.cancel:hover {
+            background-color: #0464c4;
+            border-color: #0464c4;
+
+        }
+
+
+        form * {
+            display: block;
+        }
+
+        input, textarea {
+            max-width: 50%;
+            min-width: 50%;
+            border-radius: 3px;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .group {
+            display: flex;
+            gap: 10px;
+        }
+    </style>
+{% endblock style %} 
+
+{% block content %}
+    <h3>Savolni yangilash</h3>
+
+    
+
+    <form method="post">
+        {% csrf_token %}
+
+        <input type="text" value="{{ question.title }}" name="title">
+        <textarea name="answer" id="" cols="30" rows="10">{{ question.answer }}</textarea>
+        
+        <div class="group">
+            <a href="{% url 'home' %}" class="btn cancel">Bekor qilish</a>
+            <a href="{% url 'delete' question.pk %}">
+                <button class="btn update">Yangilash</button>
+            </a>
+        </div>
+
+    </form>
+    
+
+    
+
+{% endblock content %}
