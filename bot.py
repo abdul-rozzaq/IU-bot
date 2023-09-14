@@ -23,16 +23,18 @@ from db.models import *
 ############################################################################
 
 
-from telegram import Update, ReplyKeyboardMarkup, KeyboardButton
+from telegram import Update, ReplyKeyboardMarkup, KeyboardButton, User as tgUser
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, filters, MessageHandler
 from asgiref.sync import sync_to_async
 
 
-app = ApplicationBuilder().token("6474695276:AAFU3QJ2epLt7AG7wQeem7dOb9HzOzbtchA").build()
+app = ApplicationBuilder().token("1936491324:AAEsOVflNJ0PVvEqCZkTiKk8btKaDw_WLsU").build()
 
  
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     buttons = await getButtons()
+    
+    await createUser(update.effective_user)
     
     await update.message.reply_text(f'Assalomu alaykum {update.effective_user.first_name} \nMen <a href="https://t.me/islomiyuniversitetlar">Islomiy Universitetlar kanali</a> ning telegram botiman \n\nPastdagi tugmalar orqali savollaringizga javob olishingiz mumkin', 
         parse_mode='HTML', 
@@ -71,6 +73,22 @@ def getAnswer(question: str) -> str:
         return qs[0].answer
     
     return '<b>☹️ Nimadur xato ketdi.</b> \n\nBotni ishga tushurish uchun /start ni bosing.'
+
+@sync_to_async
+def createUser(user: tgUser):
+    
+    qs = User.objects.filter(telegram_id=user.id)
+    print('user checking ...')
+    if not qs.exists():
+        User.objects.create(
+            username=user.username, 
+            first_name=user.first_name, 
+            last_name=user.last_name, 
+            telegram_id=user.id
+        )
+    
+    
+    
 
 
 print("Bot started ...")

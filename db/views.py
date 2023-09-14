@@ -2,7 +2,7 @@
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login as lg, logout as lgt, authenticate
-from db.models import Question
+from db.models import Question, User as tgUser
 
 
 @login_required(login_url='login/')
@@ -10,7 +10,7 @@ def home(request):
     qs = Question.objects.all()
     
     
-    return render(request, 'questions.html', {'questions': qs})
+    return render(request, 'questions.html', {'questions': qs, 'users_count': tgUser.objects.count()})
 
 
 

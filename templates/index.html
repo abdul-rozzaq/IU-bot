@@ -13,7 +13,7 @@
     
     <nav>
         <div class="container">
-            <a href="{% url 'home' %}"><div class="title">IU xizmati &bull; Admin panel</div></a>
+            <a href="{% url 'home' %}"><div class="title">IU xizmati &bull; Admin panel &bull; Bot foydalanuvchilari soni: {{ users_count }}</div></a>
             <div>
                 <a href="{% url 'add_question' %}"><button class="btn add-question">Yangi savol qo'shish</button></a>
                 <a href="{% url 'logout' %}"><button class="btn logout">Chiqish</button></a>
