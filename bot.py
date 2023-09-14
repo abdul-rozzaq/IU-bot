@@ -27,8 +27,9 @@ from telegram import Update, ReplyKeyboardMarkup, KeyboardButton, User as tgUser
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, filters, MessageHandler
 from asgiref.sync import sync_to_async
 
+from config import TOKEN
 
-app = ApplicationBuilder().token("1936491324:AAEsOVflNJ0PVvEqCZkTiKk8btKaDw_WLsU").build()
+app = ApplicationBuilder().token(TOKEN).build()
 
  
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
