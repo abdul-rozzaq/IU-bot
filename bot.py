@@ -57,27 +57,41 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 ## Conversation
 
-async def enter(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def enter_questions(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     buttons = await getButtons()
-    await update.message.reply_text('Siz Savol Javob bo\'limidasiz \n\nOrtga qaytish uchun /cancel buyrug\'ini bosing.', reply_markup=buttons, parse_mode='HTML')
-    
+    await update.message.reply_text('Siz Savol Javob bo\'limidasiz \n\nOrtga qaytish uchun /cancel buyrug\'idan foydalaning.', reply_markup=buttons, parse_mode='HTML')
     
     return 0
 
-async def message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+
+async def questions(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     answer = await getAnswer(update.message.text) 
     buttons = await getButtons()
 
     await update.message.reply_text(answer, reply_markup=buttons, parse_mode='HTML')
-  
+
+
+async def enter_universities(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    buttons = ReplyKeyboardMarkup([['🔝 Asosiy menyu']], resize_keyboard=True)
+    await update.message.reply_text('Siz Universitetlar bo\'limidasiz \n\nOrtga qaytish uchun /cancel buyrug\'idan foydalaning.', reply_markup=buttons, parse_mode='HTML')
+
+    return 1
+
+async def universities(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    answer = await getAnswer(update.message.text) 
+    buttons = await getButtons()
+
+    await update.message.reply_text(answer, reply_markup=buttons, parse_mode='HTML')
+
+    
 async def quit(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await update.message.reply_text('Siz asosiy menyudasiz', reply_markup=main_buttons, parse_mode='HTML')
     
     return ConversationHandler.END
 
-################################
+############################################################################
 ## DB
-################################
+############################################################################
 
 
 @sync_to_async
@@ -120,14 +134,23 @@ app.add_handler(CommandHandler("start", start))
 
 conv_handler = ConversationHandler(
     entry_points=[
-        MessageHandler(filters.Regex(r'(🖇 Savol Javob)'), enter)
+        MessageHandler(filters.Regex(r'(🖇 Savol Javob)'), enter_questions),
+        MessageHandler(filters.Regex(r'^(📑 Universitetlar haqida ma\'lumot)$'), enter_universities)
     ],
     # 🖇 Savol Javob
     states={
-        0: [MessageHandler(filters.Regex(r'(🔝 Asosiy menyu)'), quit), CommandHandler('cancel', quit), MessageHandler(filters.TEXT, message), ]
+        0: [
+            MessageHandler(filters.TEXT & (~ filters.Regex(r'^(\/cancel)$') & ~ filters.Regex(r'^(🔝 Asosiy menyu)$')), questions),
+        ],
+        1: [
+            MessageHandler(filters.TEXT & (~ filters.Regex(r'^(\/cancel)$') & ~ filters.Regex(r'^(🔝 Asosiy menyu)$')), universities),
+        ],
     },
-    fallbacks=[]
+    fallbacks=[
+        CommandHandler('cancel', quit),
+        MessageHandler(filters.Regex(r'(🔝 Asosiy menyu)'), quit)
+    ]
 )
-app.add_handler(conv_handler)
 
+app.add_handler(conv_handler)
 app.run_polling()
