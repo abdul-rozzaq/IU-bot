@@ -24,32 +24,56 @@ from db.models import *
 
 
 from telegram import Update, ReplyKeyboardMarkup, KeyboardButton, User as tgUser
-from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, filters, MessageHandler
+from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, filters, MessageHandler, ConversationHandler
 from asgiref.sync import sync_to_async
 
 from config import TOKEN 
 
+import logging
+
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
+
 app = ApplicationBuilder().token(TOKEN).build()
 
- 
+
+main_buttons = ReplyKeyboardMarkup([
+    ['📑 Universitetlar haqida ma\'lumot'],
+    ['🖇 Savol Javob'],
+    ['📬 Xizmatlar'],
+    ['👨🏼‍💻 Admin bilan bog\'lanish'],
+], resize_keyboard=True) 
+
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    buttons = await getButtons()
-    
+   
     await createUser(update.effective_user)
     
     await update.message.reply_text(f'Assalomu alaykum {update.effective_user.first_name} \nMen <a href="https://t.me/islomiyuniversitetlar">Islomiy Universitetlar kanali</a> ning telegram botiman \n\nPastdagi tugmalar orqali savollaringizga javob olishingiz mumkin', 
         parse_mode='HTML', 
-        reply_markup=buttons
+        reply_markup=main_buttons
     )
 
 
     
+
+## Conversation
+
+async def enter(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    buttons = await getButtons()
+    await update.message.reply_text('Siz Savol Javob bo\'limidasiz \n\nOrtga qaytish uchun /cancel buyrug\'ini bosing.', reply_markup=buttons, parse_mode='HTML')
+    
+    
+    return 0
+
 async def message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     answer = await getAnswer(update.message.text) 
     buttons = await getButtons()
 
     await update.message.reply_text(answer, reply_markup=buttons, parse_mode='HTML')
-
+  
+async def quit(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    await update.message.reply_text('Siz asosiy menyudasiz', reply_markup=main_buttons, parse_mode='HTML')
+    
+    return ConversationHandler.END
 
 ################################
 ## DB
@@ -62,6 +86,9 @@ def getButtons():
     qs = Question.objects.all()
     
     buttons = [ [x.title] for x in qs ]
+    
+    buttons.append(['🔝 Asosiy menyu'])
+    
     return ReplyKeyboardMarkup(buttons, resize_keyboard=True)
 
 @sync_to_async
@@ -89,12 +116,18 @@ def createUser(user: tgUser):
         )
     
     
-    
-
-
-print("Bot started ...")
-
 app.add_handler(CommandHandler("start", start))
-app.add_handler(MessageHandler(filters.TEXT, message))
+
+conv_handler = ConversationHandler(
+    entry_points=[
+        MessageHandler(filters.Regex(r'(🖇 Savol Javob)'), enter)
+    ],
+    # 🖇 Savol Javob
+    states={
+        0: [MessageHandler(filters.Regex(r'(🔝 Asosiy menyu)'), quit), CommandHandler('cancel', quit), MessageHandler(filters.TEXT, message), ]
+    },
+    fallbacks=[]
+)
+app.add_handler(conv_handler)
 
 app.run_polling()
